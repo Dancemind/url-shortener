@@ -17,7 +17,6 @@ public class UrlData extends BaseEntity {
     private String longUrl;
 
     @Column(name = "short_url")
-    @NotEmpty
     private String shortUrl;
 
     @Column(name = "comment")

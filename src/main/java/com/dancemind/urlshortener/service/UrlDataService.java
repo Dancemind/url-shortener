@@ -7,4 +7,5 @@ import java.util.List;
 public interface UrlDataService {
 
     List<UrlData> findAllUrlsData();
+    UrlData createUrlData(UrlData urlData);
 }
