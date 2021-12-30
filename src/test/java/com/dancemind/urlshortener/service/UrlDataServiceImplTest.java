@@ -1,10 +1,10 @@
 package com.dancemind.urlshortener.service;
 
+import com.dancemind.urlshortener.TestsBaseClass;
 import com.dancemind.urlshortener.entity.UrlData;
 import com.dancemind.urlshortener.repository.UrlDataRepository;
 import com.dancemind.urlshortener.service.exceptions.NoAvailableLettersException;
 import com.dancemind.urlshortener.service.exceptions.ShortUrlNotFoundException;
-import liquibase.repackaged.org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,9 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class UrlDataServiceImplTest {
-
-    private static final int STRING_LENGTH = 10;
+public class UrlDataServiceImplTest extends TestsBaseClass {
 
     private static final String INITIAL_SHORT_URL = "aaaaaa";
     private static final String SHORT_URL = "aazZZZ";
@@ -117,13 +115,5 @@ public class UrlDataServiceImplTest {
     public void getUrlData_Failed_DoesNotExist() {
         assertThatThrownBy(() -> urlDataService.getUrlData(NON_EXISTENT_SHORT_URL))
                 .isInstanceOf(ShortUrlNotFoundException.class);
-    }
-
-    private UrlData createUrlDataInstance() {
-        return new UrlData(generateString(), generateString(), generateString());
-    }
-
-    protected String generateString() {
-        return RandomStringUtils.randomAlphabetic(STRING_LENGTH);
     }
 }
