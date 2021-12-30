@@ -14,6 +14,13 @@ import java.util.List;
 @Service
 public class UrlDataServiceImpl implements UrlDataService {
 
+    private static final String INITIAL_SHORT_URL = "aaaaaa";
+
+    private static final char FIRST_SMALL_LETTER = 'a';
+    private static final char LAST_SMALL_LETTER = 'z';
+    private static final char FIRST_BIG_LETTER = 'A';
+    private static final char LAST_BIG_LETTER = 'Z';
+
     public UrlDataRepository urlDataRepository;
 
     public UrlDataServiceImpl(UrlDataRepository urlDataRepository) {
@@ -53,7 +60,7 @@ public class UrlDataServiceImpl implements UrlDataService {
         UrlData urlData = urlDataRepository.findFirstByDeletedFalseOrderByIdDesc();
 
         if (urlData == null) {
-            return "aaaaaa";
+            return INITIAL_SHORT_URL;
         }
 
         StringBuilder shortUrl = new StringBuilder(urlData.getShortUrl());
@@ -78,15 +85,15 @@ public class UrlDataServiceImpl implements UrlDataService {
      */
     private StringBuilder changeLetter(StringBuilder letters, int position) {
         if (position == -1) {
-            throw new NoAvailableLettersException("All short urls were used. The letters are over.");
+            throw new NoAvailableLettersException("All short urls are used. The letters are over.");
         }
 
         char letter = letters.charAt(position);
-        if (letter == 'Z') {
-            letters.setCharAt(position, 'a');
+        if (letter == LAST_BIG_LETTER) {
+            letters.setCharAt(position, FIRST_SMALL_LETTER);
             return changeLetter(letters, --position);
-        } else if (letter == 'z') {
-            letters.setCharAt(position, 'A');
+        } else if (letter == LAST_SMALL_LETTER) {
+            letters.setCharAt(position, FIRST_BIG_LETTER);
             return letters;
         }
 
