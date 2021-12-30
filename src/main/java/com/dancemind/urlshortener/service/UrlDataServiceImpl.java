@@ -3,6 +3,7 @@ package com.dancemind.urlshortener.service;
 import com.dancemind.urlshortener.entity.UrlData;
 import com.dancemind.urlshortener.repository.UrlDataRepository;
 import com.dancemind.urlshortener.service.exceptions.NoAvailableLettersException;
+import com.dancemind.urlshortener.service.exceptions.ShortUrlNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,7 @@ public class UrlDataServiceImpl implements UrlDataService {
      * Creates short url for given long url
      *
      * @param urlData contains long url to remember
+     *
      * @return UrlData which contains short url
      */
     @Override
@@ -49,6 +51,25 @@ public class UrlDataServiceImpl implements UrlDataService {
     public UrlData createUrlData(UrlData urlData) {
         urlData.setShortUrl(generateShortUrl());
         return urlDataRepository.save(urlData);
+    }
+
+    /**
+     * Gets long url by short url
+     *
+     * @param shortUrl  short url
+     *
+     * @return  long url in UrlData object
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public UrlData getUrlData(String shortUrl) {
+        UrlData urlData = urlDataRepository.findByShortUrlAndDeletedFalse(shortUrl);
+
+        if (urlData == null) {
+            throw new ShortUrlNotFoundException("Specified short url is not found.");
+        }
+
+        return urlData;
     }
 
     /**

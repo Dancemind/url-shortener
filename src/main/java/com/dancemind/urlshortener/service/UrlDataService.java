@@ -8,4 +8,6 @@ public interface UrlDataService {
 
     List<UrlData> findAllUrlsData();
     UrlData createUrlData(UrlData urlData);
+
+    UrlData getUrlData(String shortUrl);
 }

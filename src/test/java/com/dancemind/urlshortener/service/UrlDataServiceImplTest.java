@@ -3,6 +3,7 @@ package com.dancemind.urlshortener.service;
 import com.dancemind.urlshortener.entity.UrlData;
 import com.dancemind.urlshortener.repository.UrlDataRepository;
 import com.dancemind.urlshortener.service.exceptions.NoAvailableLettersException;
+import com.dancemind.urlshortener.service.exceptions.ShortUrlNotFoundException;
 import liquibase.repackaged.org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,8 @@ public class UrlDataServiceImplTest {
     private static final String LAST_SHORT_URL = "ZZZZZZ";
 
     private static final int NO_INVOCATIONS = 0;
+
+    private static final String NON_EXISTENT_SHORT_URL = "aaa";
 
     @Mock
     private UrlDataRepository urlDataRepository;
@@ -102,6 +105,18 @@ public class UrlDataServiceImplTest {
         assertThatThrownBy(() -> urlDataService.createUrlData(urlData2))
                 .isInstanceOf(NoAvailableLettersException.class);
         verify(urlDataRepository, times(NO_INVOCATIONS)).save(any());
+    }
+
+    @Test
+    public void getUrlData_Success() {
+        when(urlDataRepository.findByShortUrlAndDeletedFalse(urlData.getShortUrl())).thenReturn(urlData);
+        assertEquals(urlDataService.getUrlData(urlData.getShortUrl()), urlData);
+    }
+
+    @Test
+    public void getUrlData_Failed_DoesNotExist() {
+        assertThatThrownBy(() -> urlDataService.getUrlData(NON_EXISTENT_SHORT_URL))
+                .isInstanceOf(ShortUrlNotFoundException.class);
     }
 
     private UrlData createUrlDataInstance() {

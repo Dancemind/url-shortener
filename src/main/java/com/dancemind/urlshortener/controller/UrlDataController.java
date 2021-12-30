@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/urls")
 public class UrlDataController {
 
     public UrlDataService urlDataService;
@@ -19,14 +18,20 @@ public class UrlDataController {
     }
 
     @ApiOperation(value = "Returns all urls data")
-    @GetMapping
+    @GetMapping("/urls")
     public List<UrlData> getAllExpenseCategories() {
         return urlDataService.findAllUrlsData();
     }
 
     @ApiOperation(value = "Creates new short url for long url")
-    @PostMapping
+    @PostMapping("/urls")
     public UrlData createUrlData(@Valid @RequestBody UrlData urlData) {
         return urlDataService.createUrlData(urlData);
+    }
+
+    @ApiOperation(value = "Gets long url by short url")
+    @GetMapping("/{shortUrl}")
+    public UrlData getUrlData(@PathVariable(name = "shortUrl") String shortUrl) {
+        return urlDataService.getUrlData(shortUrl);
     }
 }
