@@ -121,6 +121,8 @@ public class UrlDataServiceImplTest extends TestsBaseClass {
     public void getUrlData_Failed_Deleted() {
         urlData.setDeleted(true);
 
+        when(urlDataRepository.findByShortUrlAndDeletedFalse(urlData.getShortUrl()))
+                .thenThrow(ShortUrlNotFoundException.class);
         assertThatThrownBy(() -> urlDataService.getUrlData(urlData.getShortUrl()))
                 .isInstanceOf(ShortUrlNotFoundException.class);
         verify(urlDataRepository).findByShortUrlAndDeletedFalse(urlData.getShortUrl());
