@@ -2,6 +2,7 @@ package com.dancemind.urlshortener.service;
 
 import com.dancemind.urlshortener.entity.UrlData;
 import com.dancemind.urlshortener.repository.UrlDataRepository;
+import com.dancemind.urlshortener.service.exceptions.BusyShortUrlException;
 import com.dancemind.urlshortener.service.exceptions.NoAvailableLettersException;
 import com.dancemind.urlshortener.service.exceptions.ShortUrlNotFoundException;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ public class UrlDataServiceImpl implements UrlDataService {
     private static final char FIRST_BIG_LETTER = 'A';
     private static final char LAST_BIG_LETTER = 'Z';
 
+    private static final boolean CUSTOM_SHORT_URL = true;
+
     public UrlDataRepository urlDataRepository;
 
     public UrlDataServiceImpl(UrlDataRepository urlDataRepository) {
@@ -36,11 +39,11 @@ public class UrlDataServiceImpl implements UrlDataService {
     @Override
     @Transactional(readOnly = true)
     public List<UrlData> findAllUrlsData() {
-        return urlDataRepository.findAllByDeletedFalse();
+        return urlDataRepository.findAllByDeletedFalseOrderByIdDesc();
     }
 
     /**
-     * Creates short url for given long url
+     * Creates short url for given long url if there is no short url (empty)
      *
      * @param urlData contains long url to remember
      *
@@ -49,7 +52,14 @@ public class UrlDataServiceImpl implements UrlDataService {
     @Override
     @Transactional
     public UrlData createUrlData(UrlData urlData) {
-        urlData.setShortUrl(generateShortUrl());
+        if (urlData.getShortUrl().isEmpty()) {
+            urlData.setShortUrl(generateShortUrl());
+        } else {
+            if (urlDataRepository.findByShortUrlAndDeletedFalse(urlData.getShortUrl()) != null) {
+                throw new BusyShortUrlException("The short url is already in use.");
+            }
+            urlData.setIsCustom(CUSTOM_SHORT_URL);
+        }
         return urlDataRepository.save(urlData);
     }
 
@@ -78,7 +88,7 @@ public class UrlDataServiceImpl implements UrlDataService {
      * @return generated string
      */
     private String generateShortUrl() {
-        UrlData urlData = urlDataRepository.findFirstByDeletedFalseOrderByIdDesc();
+        UrlData urlData = urlDataRepository.findFirstByDeletedFalseAndIsCustomFalseOrderByIdDesc();
 
         if (urlData == null) {
             return INITIAL_SHORT_URL;

@@ -9,9 +9,9 @@ import java.util.List;
 @Repository
 public interface UrlDataRepository extends JpaRepository<UrlData, Long> {
 
-    List<UrlData> findAllByDeletedFalse();
+    List<UrlData> findAllByDeletedFalseOrderByIdDesc();
 
     UrlData findByShortUrlAndDeletedFalse(String shortUrl);
 
-    UrlData findFirstByDeletedFalseOrderByIdDesc();
+    UrlData findFirstByDeletedFalseAndIsCustomFalseOrderByIdDesc();
 }

@@ -46,13 +46,13 @@ public class UrlDataTest extends TestsBaseClass {
     @BeforeEach
     public void init() {
         urlDataRepository.deleteAll();
+        urlDataRepository.findAll();
 
         urlData = createUrlDataInstance();
         urlData.setShortUrl(SHORT_URL);
         urlDataRepository.save(urlData);
 
         nextExpectedId = urlData.getId() + 1;
-
     }
 
     @Test

@@ -12,6 +12,7 @@ public class TestsBaseClass {
 
     private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm";
     private static final int STRING_LENGTH = 10;
+    private static final boolean NOT_CUSTOM = false;
 
     protected String convertObjectToJsonString(Object object) throws JsonProcessingException {
         return new ObjectMapper()
@@ -21,7 +22,7 @@ public class TestsBaseClass {
     }
 
     protected UrlData createUrlDataInstance() {
-        return new UrlData(generateString(), generateString(), generateString());
+        return new UrlData(generateString(), generateString(), generateString(), NOT_CUSTOM);
     }
 
     protected String generateString() {
