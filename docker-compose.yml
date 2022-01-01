@@ -1,0 +1,32 @@
+version: '3.7'
+
+services:
+  urlshortener-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: urlshortener:latest
+    container_name: 'urlshortener_app'
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://urlshortener-db:5432/ush
+      - SPRING_DATASOURCE_USERNAME=post
+      - SPRING_DATASOURCE_PASSWORD=pass
+    depends_on:
+      - urlshortener-db
+
+  urlshortener-db:
+    image: postgres:14.1
+    container_name: 'urlshortener_db'
+    ports:
+      - "5432:5432"
+    volumes:
+      - urlshortener:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=ush
+      - POSTGRES_USER=post
+      - POSTGRES_PASSWORD=pass
+
+volumes:
+  urlshortener:
