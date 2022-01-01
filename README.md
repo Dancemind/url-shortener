@@ -10,4 +10,5 @@
 Изменение структуры БД с Liquibase.  
 Тесты JUnit5: модульные и интеграционные.  
 Покрытие кода JaCoCo.  
-Документация API со Swagger от Springfox v3.
+Документация API со Swagger от Springfox v3.  
+Развертывание с Docker.  
